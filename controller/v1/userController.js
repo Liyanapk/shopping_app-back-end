@@ -1,6 +1,69 @@
 import User from "../../models/user.js";
 import httpError from "../../utils/httpError.js";
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken';
+
+
+
+//logging user
+
+
+export const logginUser = async(req, res, next)=>{
+
+   try {
+
+    const{ email, password } = req.body;
+
+    if(! email || ! password){
+        return next(new httpError("Email & Password are required! ",400))
+    }
+
+
+    const user = await User.findOne({ email })
+
+    if(! user){
+        return next(new httpError("No user found!",400) )
+    }
+
+
+     //comparing both password
+     const passwordValid = await bcrypt.compare(password, user.password);
+
+           
+     if (!passwordValid) {
+         return next( new httpError ( "invalid credentials", 402))
+     }
+   
+
+    //if password and email are ok then generate a jwt token 
+
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+    res.status(200).json({
+        status:true,
+        message: "Login successfull",
+        access_token:token
+    })
+
+    } catch (error) {
+
+    return next ( new httpError ("Failed to login",500))
+    }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+//sighnup user
 
 export const sighnUpUser =async( req, res, next)=>{
 
@@ -175,4 +238,4 @@ export const updateUser = async(req, res, next)=>{
 }
 
 
-//login and order list cart controlling
+//  order list 
