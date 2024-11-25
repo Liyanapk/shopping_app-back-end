@@ -29,7 +29,7 @@ export const addProduct = async(req, res, next)=>{
         if( price <= 0 ){
             return next(new httpError("price should be a valid price",404))
         }
-
+ 
         const newProducts = await Product({
             name,
             price,
@@ -116,7 +116,8 @@ export const listProduct = async( req, res, next) =>{
           .sort(sort)
           .skip(skip)
           .limit(limit)
-          .select('-__v -createdAt -updatedAt' );
+          .populate('catagory')  
+        .select('-__v -createdAt -updatedAt');
 
 
         //response send
