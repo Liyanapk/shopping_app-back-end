@@ -61,6 +61,7 @@ export const addProduct = async(req, res, next)=>{
 //list product
 
 
+
 export const listProduct = async( req, res, next) =>{
 
     try {
@@ -72,6 +73,7 @@ export const listProduct = async( req, res, next) =>{
 
       // Filtering
         const filter = {};
+
         if (req.query.searchTerm) {
             const searchTerm = req.query.searchTerm.trim(); 
             const isNumeric = !isNaN(searchTerm); 
