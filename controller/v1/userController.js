@@ -50,14 +50,7 @@ export const logginUser = async(req, res, next)=>{
     return next ( new httpError ("Failed to login",500))
     }
 
-    }
-
-
-
-
-
-
-
+    } 
 
 
 
@@ -238,4 +231,3 @@ export const updateUser = async(req, res, next)=>{
 }
 
 
-//  order list 

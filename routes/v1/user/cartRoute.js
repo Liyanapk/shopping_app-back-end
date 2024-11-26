@@ -1,5 +1,5 @@
 import express from "express";
-import { addToCart, deleteCart, listCart, oneCart } from "../../../controller/v1/cartController.js";
+import { addToCart, deleteCart, oneCart } from "../../../controller/v1/cartController.js";
 import { userAuth } from "../../../middleware/authCheck.js";
 
 
@@ -10,6 +10,6 @@ router.use(userAuth)
 router.post('/',addToCart)
 router.get('/:id',oneCart)
 router.delete('/:id',deleteCart)
-router.get('/',listCart)
+
 
 export default router

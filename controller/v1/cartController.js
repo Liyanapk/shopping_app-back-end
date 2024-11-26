@@ -157,89 +157,89 @@ export const deleteCart = async (req, res, next)=>{
 
 
 
- //list all cart
+//  //list all cart
 
 
 
- export const listCart = async (req, res, next) => {
+//  export const listCart = async (req, res, next) => {
 
-    try {
+//     try {
 
-      // Pagination
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 4;
-      const skip = (page - 1) * limit;
+//       // Pagination
+//       const page = parseInt(req.query.page) || 1;
+//       const limit = parseInt(req.query.limit) || 4;
+//       const skip = (page - 1) * limit;
   
-      // Filtering
-      const filter = {};
-      if (req.query.searchTerm) {
-        const searchTerm = req.query.searchTerm.trim();
-        const isNumeric = !isNaN(searchTerm);
+//       // Filtering
+//       const filter = {};
+//       if (req.query.searchTerm) {
+//         const searchTerm = req.query.searchTerm.trim();
+//         const isNumeric = !isNaN(searchTerm);
   
-        if (isNumeric) {
-          const numericValue = parseFloat(searchTerm);
+//         if (isNumeric) {
+//           const numericValue = parseFloat(searchTerm);
   
-          if (req.query.operator === "gt") {
-            filter["cart.price"] = { $gt: numericValue };
-          } else if (req.query.operator === "lt") {
-            filter["cart.price"] = { $lt: numericValue };
-          } else {
-            filter["cart.price"] = numericValue;
-          }
-        } else {
-          filter["cart.name"] = { $regex: searchTerm, $options: "i" };
-        }
-      }
+//           if (req.query.operator === "gt") {
+//             filter["cart.price"] = { $gt: numericValue };
+//           } else if (req.query.operator === "lt") {
+//             filter["cart.price"] = { $lt: numericValue };
+//           } else {
+//             filter["cart.price"] = numericValue;
+//           }
+//         } else {
+//           filter["cart.name"] = { $regex: searchTerm, $options: "i" };
+//         }
+//       }
   
-       // Sorting
-    const sort = {};
-    if (req.query.sortBy) {
-      const [field, order] = req.query.sortBy.split(":");
-      sort[`cart.${field}`] = order === "desc" ? -1 : 1;
-    }
-    if (Object.keys(sort).length === 0) {
-        // default sort
-      sort["cart._id"] = 1; 
-    }
+//        // Sorting
+//     const sort = {};
+//     if (req.query.sortBy) {
+//       const [field, order] = req.query.sortBy.split(":");
+//       sort[`cart.${field}`] = order === "desc" ? -1 : 1;
+//     }
+//     if (Object.keys(sort).length === 0) {
+//         // default sort
+//       sort["cart._id"] = 1; 
+//     }
 
 
-      // total items count
-      const total = await User.aggregate([
-        { $unwind: "$cart" },
-        { $match: filter },
-        { $count: "total" },
-      ]);
+//       // total items count
+//       const total = await User.aggregate([
+//         { $unwind: "$cart" },
+//         { $match: filter },
+//         { $count: "total" },
+//       ]);
   
-      const totalItems = total.length > 0 ? total[0].total : 0;
+//       const totalItems = total.length > 0 ? total[0].total : 0;
   
-      // fetch the paginated and sorted cart items
-      const allCart = await User.aggregate([
-        { $unwind: "$cart" },
-        { $match: filter },
-        { $sort: sort },
-        { $skip: skip },
-        { $limit: limit },
-        {
-          $project: {
-            _id: 0,
-            cart: 1,
-          },
-        },
-      ]);
+//       // fetch the paginated and sorted cart items
+//       const allCart = await User.aggregate([
+//         { $unwind: "$cart" },
+//         { $match: filter },
+//         { $sort: sort },
+//         { $skip: skip },
+//         { $limit: limit },
+//         {
+//           $project: {
+//             _id: 0,
+//             cart: 1,
+//           },
+//         },
+//       ]);
   
    
-      res.status(200).json({
-        status: true,
-        message: "Cart retrieved successfully",
-        data: allCart,
-        access_token: null,
-        totalPages: Math.ceil(totalItems / limit),
-        currentPage: page,
-        totalItems: totalItems,
-      });
-    } catch (error) {
-      console.error(error);
-      return next(new httpError("Server Error", 500));
-    }
-  };
+//       res.status(200).json({
+//         status: true,
+//         message: "Cart retrieved successfully",
+//         data: allCart,
+//         access_token: null,
+//         totalPages: Math.ceil(totalItems / limit),
+//         currentPage: page,
+//         totalItems: totalItems,
+//       });
+//     } catch (error) {
+//       console.error(error);
+//       return next(new httpError("Server Error", 500));
+//     }
+//   };
   
