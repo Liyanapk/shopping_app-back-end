@@ -62,6 +62,12 @@ export const addProduct = async(req, res, next)=>{
 
 
 
+
+
+
+
+
+
 export const listProduct = async( req, res, next) =>{
 
     try {
