@@ -11,7 +11,7 @@ export const addToCart = async (req, res, next) => {
     const userId = req.user?.id;
     const { product, quantity } = req.body;
 
-  
+
 
     // Validate product and quantity
     if (!product || quantity === undefined) {
@@ -78,38 +78,38 @@ export const deleteCart = async (req, res, next) => {
   try {
 
     //cart id
-      const { id } = req.params; 
+    const { id } = req.params;
 
-      if (!id) {
-          return next(new httpError("No cart item ID found!", 400));
-      }
+    if (!id) {
+      return next(new httpError("No cart item ID found!", 400));
+    }
 
-      const userId = req.user?.id;
+    const userId = req.user?.id;
 
-      if (!userId) {
-          return next(new httpError("Please log in!", 400));
-      }
+    if (!userId) {
+      return next(new httpError("Please log in!", 400));
+    }
 
-      const updatedCart = await User.findOneAndUpdate(
-          { _id: userId },
-          { $pull: { cart: { _id: id } } }, 
-          { new: true }
-      ).populate("cart.product");
+    const updatedCart = await User.findOneAndUpdate(
+      { _id: userId },
+      { $pull: { cart: { _id: id } } },
+      { new: true }
+    ).populate("cart.product");
 
-      if (!updatedCart) {
-          return next(new httpError("User not found or no cart item found!", 400));
-      }
+    if (!updatedCart) {
+      return next(new httpError("User not found or no cart item found!", 400));
+    }
 
-      res.status(200).json({
-          status: true,
-          message: "Cart item deleted successfully",
-          data: updatedCart.cart,
-          access_token: null
-      });
+    res.status(200).json({
+      status: true,
+      message: "Cart item deleted successfully",
+      data: updatedCart.cart,
+      access_token: null
+    });
 
   } catch (error) {
-      console.error("Internal server error:", error);
-      return next(new httpError("Internal server error", 500));
+    console.error("Internal server error:", error);
+    return next(new httpError("Internal server error", 500));
   }
 };
 
@@ -128,16 +128,16 @@ export const deleteCart = async (req, res, next) => {
 //       const page = parseInt(req.query.page) || 1;
 //       const limit = parseInt(req.query.limit) || 4;
 //       const skip = (page - 1) * limit;
-  
+
 //       // Filtering
 //       const filter = {};
 //       if (req.query.searchTerm) {
 //         const searchTerm = req.query.searchTerm.trim();
 //         const isNumeric = !isNaN(searchTerm);
-  
+
 //         if (isNumeric) {
 //           const numericValue = parseFloat(searchTerm);
-  
+
 //           if (req.query.operator === "gt") {
 //             filter["cart.price"] = { $gt: numericValue };
 //           } else if (req.query.operator === "lt") {
@@ -149,7 +149,7 @@ export const deleteCart = async (req, res, next) => {
 //           filter["cart.name"] = { $regex: searchTerm, $options: "i" };
 //         }
 //       }
-  
+
 //        // Sorting
 //     const sort = {};
 //     if (req.query.sortBy) {
@@ -168,9 +168,9 @@ export const deleteCart = async (req, res, next) => {
 //         { $match: filter },
 //         { $count: "total" },
 //       ]);
-  
+
 //       const totalItems = total.length > 0 ? total[0].total : 0;
-  
+
 //       // fetch the paginated and sorted cart items
 //       const allCart = await User.aggregate([
 //         { $unwind: "$cart" },
@@ -185,8 +185,8 @@ export const deleteCart = async (req, res, next) => {
 //           },
 //         },
 //       ]);
-  
-   
+
+
 //       res.status(200).json({
 //         status: true,
 //         message: "Cart retrieved successfully",
@@ -201,7 +201,7 @@ export const deleteCart = async (req, res, next) => {
 //       return next(new httpError("Server Error", 500));
 //     }
 //   };
-  
+
 
 
 //list cart
@@ -248,8 +248,8 @@ export const updateCartQuantity = async (req, res, next) => {
   try {
 
     //cart id
-    const { id } = req.params; 
-    const { quantity } = req.body; 
+    const { id } = req.params;
+    const { quantity } = req.body;
 
     if (!id) {
       return next(new httpError("No cart item ID found!", 400));
@@ -265,24 +265,24 @@ export const updateCartQuantity = async (req, res, next) => {
       return next(new httpError("Please log in!", 400));
     }
 
-   
+
     const user = await User.findById(userId);
 
     if (!user) {
       return next(new httpError("User not found!", 404));
     }
 
-    
+
     const cartItem = user.cart.find(item => item._id.toString() === id);
 
     if (!cartItem) {
       return next(new httpError("Cart item not found!", 404));
     }
 
-    
+
     cartItem.quantity = quantity;
 
-   
+
     await user.save();
 
     const populatedCart = await User.findById(userId).populate("cart.product");
@@ -295,7 +295,7 @@ export const updateCartQuantity = async (req, res, next) => {
     });
 
   } catch (error) {
-    
+
     return next(new httpError("Internal server error", 500));
   }
 };
