@@ -16,8 +16,8 @@ const PORT = process.env.PORT || 4001
 dbconnect()
 app.use(express.json())
 const corsOptions = {
-    origin: 'http://localhost:3000', // Replace with your frontend domain
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: 'http://localhost:3000', 
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true,
   };
   app.use(cors(corsOptions));

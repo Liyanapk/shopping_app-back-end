@@ -50,14 +50,7 @@ export const logginUser = async(req, res, next)=>{
     return next ( new httpError ("Failed to login",500))
     }
 
-    }
-
-
-
-
-
-
-
+    } 
 
 
 
@@ -238,4 +231,40 @@ export const updateUser = async(req, res, next)=>{
 }
 
 
-//  order list 
+
+
+//get one user
+
+
+
+
+
+export const getOneUser = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+  
+      if (!id) {
+        return next(new httpError("User ID is required!", 400));
+      }
+  
+    
+      const user = await User.findById(id);
+  
+     
+      if (!user) {
+        return next(new httpError("User not found!", 404));
+      }
+  
+     
+      res.status(200).json({
+        status: true,
+        message: "User retrieved successfully",
+        data: user,
+        access_token: null,
+      });
+    } catch (error) {
+      console.error(error);
+      return next(new httpError("Internal server error", 500));
+    }
+  };
+  

@@ -1,5 +1,5 @@
 import express from 'express'
-import { logginUser, sighnUpUser, updateUser } from '../../../controller/v1/userController.js'
+import { getOneUser, logginUser, sighnUpUser, updateUser } from '../../../controller/v1/userController.js'
 import { upload } from '../../../middleware/multer/multer.js'
 import { userAuth } from '../../../middleware/authCheck.js'
 
@@ -20,6 +20,8 @@ router.post('/login',logginUser)
 router.use(userAuth)
 
 router.patch('/:id',upload.single('image'),updateUser)
+
+router.get('/:id',getOneUser)
 
 
 
