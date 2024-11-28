@@ -1,5 +1,7 @@
+import { model } from "mongoose";
 import User from "../../models/user.js";
 import httpError from "../../utils/httpError.js";
+import Stripe from 'stripe'; 
 
 
 
@@ -243,6 +245,7 @@ export const listCart = async (req, res, next) => {
 //cart quantity update
 
 
+const stripe = new Stripe("sk_test_51QPzKEKlPIuU4563yMWRGP0Cna2295G5VKt6lbwzXMbHbjfbQF0GMdY7N8zqg0H8D6zDfS5NCOEfmsROtEkYBfCK007Z8904NV");
 
 export const updateCartQuantity = async (req, res, next) => {
   try {
@@ -297,5 +300,47 @@ export const updateCartQuantity = async (req, res, next) => {
   } catch (error) {
 
     return next(new httpError("Internal server error", 500));
+  }
+};
+
+
+
+
+//payment 
+
+
+
+
+export const payment = async (req, res, next) => {
+  try {
+    const { product } = req.body;
+
+    const lineItems = product.map((item) => ({
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: item.product.name, 
+        },
+        unit_amount: item.product.price * 100, 
+      },
+      quantity: item.quantity,
+    }));
+
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items:lineItems,
+       mode:"payment",
+        success_url:"",
+        cancel_url:""      
+    })
+
+
+    res.json({id:session.id})
+
+
+  } catch (error) {
+    console.error('Error creating payment session:', error);
+    res.status(500).json({ error: 'Failed to create payment session' });
   }
 };
