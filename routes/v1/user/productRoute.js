@@ -14,4 +14,5 @@ router.post('/',upload.single('image'),addProduct)
 router.get('/',listProduct)
 router.get('/:id',oneProduct)
 
+
 export default router

@@ -17,12 +17,16 @@ dbconnect()
 app.use(express.json())
 const corsOptions = {
     origin: 'http://localhost:3000', // Replace with your frontend domain
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true,
   };
   app.use(cors(corsOptions));
   
 app.use(express.static('uploads'));
+
+
+
+
 
 app.use('/api/v1/user',userrouter)
 app.use('/api/v1/catagory',catagoryrouter)

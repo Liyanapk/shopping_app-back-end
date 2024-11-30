@@ -189,3 +189,11 @@ export const oneProduct = async(req, res, next)=>{
         
     }
 }
+
+
+
+
+
+
+
+
