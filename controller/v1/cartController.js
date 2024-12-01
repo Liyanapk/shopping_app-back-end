@@ -1,6 +1,8 @@
 import User from "../../models/user.js";
 import httpError from "../../utils/httpError.js";
 import Stripe from 'stripe'; 
+import {transporter} from '../../utils/email.js';
+
 
 // Add to cart
 export const addToCart = async (req, res, next) => {
@@ -56,6 +58,11 @@ export const addToCart = async (req, res, next) => {
   }
 };
 
+
+
+
+
+
 // Delete cart item
 export const deleteCart = async (req, res, next) => {
   try {
@@ -91,6 +98,12 @@ export const deleteCart = async (req, res, next) => {
     return next(new httpError("Internal server error", 500));
   }
 };
+
+
+
+
+
+
 
 // List cart
 export const listCart = async (req, res, next) => {
@@ -192,6 +205,7 @@ export const payment = async (req, res, next) => {
         unit_amount: item.product.price * 100, 
       },
       quantity: item.quantity,
+      
     }));
 
     const session = await stripe.checkout.sessions.create({
@@ -202,9 +216,72 @@ export const payment = async (req, res, next) => {
       cancel_url: "http://localhost:3000/cancel",
     });
 
+
+// Send email notification to the user
+const userEmail = req.user?.email; // Assuming `req.user` contains authenticated user info
+
+console.log(req.user)
+if (userEmail) {
+  const totalAmount = product.reduce(
+    (total, item) => total + item.product.price * item.quantity,
+    0
+  );
+
+
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: userEmail,
+    subject: "Payment Successful",
+    text: `Hello, your payment of $${totalAmount} was successful. Thank you for your purchase!`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error("Error sending email:", error);
+    } else {
+      console.log("Email sent:", info.response);
+    }
+  });
+}
+
+
+
+
+
+
+
+
+
+
     res.json({ id: session.id });
   } catch (error) {
-    console.error('Error creating payment session:', error);
+    
+    
     res.status(500).json({ error: 'Failed to create payment session' });
+  }
+};
+
+
+
+//clear data
+
+
+
+
+
+
+ export const clearCart = async (req, res) => {
+  try {
+      const userId = req.user.id; 
+      console.log(userId)
+
+     
+      await Cart.deleteMany({ user: userId });
+
+      res.status(200).json({ message: 'Cart cleared successfully' });
+  } catch (error) {
+    console.log(error)
+      res.status(500).json({ error: 'Failed to clear cart' });
   }
 };
